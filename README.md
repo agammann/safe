@@ -37,6 +37,8 @@ pnpm audit --prod
 pnpm preview --host 127.0.0.1 --port 4173
 ```
 
+After starting the production preview, open `http://127.0.0.1:4173/`.
+
 The production client is emitted to `dist/client`. A compatible static asset Worker and hosting metadata are also emitted to `dist/server` and `dist/.openai`. The public website is hosted through Sites. GitHub stores the source; pushing to GitHub does not automatically deploy the website.
 
 ## Honest measurements
