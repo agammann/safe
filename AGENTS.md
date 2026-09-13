@@ -1,5 +1,7 @@
 # Prototype Instructions
 
+The user authorized public HTTPS website hosting through Sites. Reuse the project_id in .openai/hosting.json and preserve public access. The website URL is https://safe.alx21.chatgpt.site. Keep the public GitHub repository synchronized when changing source.
+
 Product: Safe. Tagline: Your WiFi welfare check. Use WiFi throughout, never hotspot. Avoid hyphens and em dashes in user facing prose where possible. The user authorized a public GitHub repository. Use Tabler 1.5.1's sidebar dashboard as the existing template, adapting its content to Safe. This replaces the generated mockups. Keep genuine observations, explanations, and unknowns distinct. Never infer universal safety, VPN coverage, encrypted DNS, identity, or surveillance from a browser probe. No scanning other devices. Never publish real check results, IP addresses, or local data in the repository.
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.

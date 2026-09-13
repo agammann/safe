@@ -2,6 +2,8 @@
 
 **Your WiFi welfare check.**
 
+[Open Safe](https://safe.alx21.chatgpt.site)
+
 Safe helps a visitor understand what a WiFi connection could reveal. It runs three small HTTPS requests from the user's browser, explains the evidence, saves a local history, and compares checks after a change.
 
 Safe is a working browser application. It does not certify WiFi safety, scan other devices, identify people, read their traffic, or establish what a network operator records.
@@ -35,7 +37,7 @@ pnpm audit --prod
 pnpm preview --host 127.0.0.1 --port 4173
 ```
 
-The production client is emitted to `dist/client`. A compatible static asset Worker and hosting metadata are also emitted to `dist/server` and `dist/.openai`. GitHub source publication and live website hosting are separate. This repository does not automatically deploy a website.
+The production client is emitted to `dist/client`. A compatible static asset Worker and hosting metadata are also emitted to `dist/server` and `dist/.openai`. The public website is hosted through Sites. GitHub stores the source; pushing to GitHub does not automatically deploy the website.
 
 ## Honest measurements
 
