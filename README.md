@@ -49,6 +49,8 @@ Only selected fields are used: IP address, TLS version, HTTP version, and the en
 
 Request duration includes browser and service overhead. It is not a WiFi signal or throughput measurement. Browser connection estimates such as `4g` do not identify the transport and are not presented as WiFi detection. A local HTTP page is reported as HTTP even though localhost may count as a secure context.
 
+When comparing checks, the timing difference is the after check's reported median request duration minus the before check's. Negative values mean a lower duration in the after check; positive values mean a higher duration. If either check has no successful samples, the timing comparison is unavailable.
+
 A successful HTTPS test does not validate all applications, router configuration, device trust roots, DNS encryption, ECH coverage, VPN coverage, or operator logging. Failure does not prove an attack. An IP change does not prove that a VPN is enabled. IP comparisons become unavailable after reload or when the address changes within a check.
 
 The Cloudflare diagnostic is an external dependency, with no availability guarantee from Safe. If its response format or CORS behavior changes, tests fail visibly as inconclusive rather than being replaced with fabricated values.
