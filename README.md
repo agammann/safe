@@ -2,77 +2,84 @@
 
 **Your WiFi welfare check.**
 
-[Open Safe](https://safe.alx21.chatgpt.site)
+[Open Safe](https://safe.alx21.chatgpt.site) · [User guide](docs/user-guide.md) · [Development guide](docs/development.md) · [Report a bug](https://github.com/agammann/safe/issues)
 
-Safe helps a visitor understand what a WiFi connection could reveal. It runs three small HTTPS requests from the user's browser, explains the evidence, saves a local history, and compares checks after a change.
+Safe helps you understand what your WiFi connection could reveal. Open the website, run a check, and get a plain language report based on three small HTTPS requests from your browser.
 
-Safe is a working browser application. It does not certify WiFi safety, scan other devices, identify people, read their traffic, or establish what a network operator records.
+No installation, account, or API key is needed to use the public website.
 
-![Safe desktop application](docs/safe-desktop.png)
+![Safe's WiFi check screen with sidebar navigation and a Check my WiFi button](docs/safe-desktop.png)
 
-## What works
+## Use Safe
 
-1. Start a check with an optional label.
-2. Inspect successful HTTPS responses, reported TLS versions, request timings, and available browser connection information.
-3. Read findings explicitly labeled Measured, Explained, or Unknown.
-4. Compare two checks, including public IP observations when both remain available in the current session.
-5. Reopen the latest 20 reports after a reload. Public IP addresses are omitted from persistence and exports.
-6. Export a report, remove or clear local reports with undo, switch themes, and use the app on narrow screens.
+1. Connect your device to the WiFi you want to check.
+2. Open [Safe](https://safe.alx21.chatgpt.site) and optionally give the check a short label. Avoid personal information in labels.
+3. Select **Check my WiFi**. Safe sends three requests to Cloudflare, which receives your IP address and ordinary request information.
+4. Read the report. Each finding is labeled **Measured**, **Explained**, or **Unknown**.
+5. Use **Your checks** to reopen a report, or run another check and open **Compare checks** to see what changed.
+
+Keep the page open between checks if you want to compare public IP observations. Addresses are held in memory and are unavailable after a reload. An IP change alone does not prove VPN protection.
+
+See the [user guide](docs/user-guide.md) for comparisons, exports, clearing reports, and troubleshooting.
+
+## What the results mean
+
+| Label | Meaning |
+| --- | --- |
+| Measured | An observation from this check, such as successful HTTPS responses, reported TLS versions, or request duration. |
+| Explained | General guidance about what WiFi operators may be able to observe. |
+| Unknown | Something this browser check cannot establish, such as what the operator records or whether all device traffic uses a VPN. |
+
+Safe does not certify that a WiFi network is safe. It cannot inspect router settings, identify other users, read their traffic, or verify protection across every app. Request duration is not a signal strength or download speed measurement. A failed request does not prove an attack.
+
+## Your data
+
+The latest 20 reports are stored in your browser. Public IP addresses are omitted from saved reports and JSON exports. Optional labels and other report details remain in those files, so review an export before sharing it.
+
+Safe includes no application analytics or advertising. Cloudflare receives diagnostic requests, and the website host receives normal page requests. Reports are not synchronized between devices, browsers, or the public and local versions of Safe. Read the [privacy and security details](SECURITY.md).
 
 ## Run locally
 
-Requires Node 22.12 or newer and pnpm 11.19.0.
+Use this path to develop Safe or run your own copy. To simply use Safe, open the public website above.
+
+Install [Git](https://git-scm.com/downloads), [Node.js 24 LTS](https://nodejs.org/en/download), and **pnpm 11.19.0**. The repository declares Node.js 22.12.0 as its minimum; Node.js 24 is used for verification. If pnpm is not installed, run `npm install --global pnpm@11.19.0` after installing Node.js. See the [pnpm installation guide](https://pnpm.io/installation) for other installation methods.
+
+Run these commands in a terminal, one at a time:
 
 ```sh
+git clone https://github.com/agammann/safe.git
+cd safe
 pnpm install --frozen-lockfile
-pnpm dev --host 127.0.0.1 --port 5173
+pnpm dev --host 127.0.0.1 --port 5173 --strictPort
 ```
 
-Open `http://127.0.0.1:5173/`. No API key, account, database, or backend is required.
+Open **http://127.0.0.1:5173/**. Leave the terminal running while using the app. Press **Ctrl+C** to stop it. Internet access is required for installation and live diagnostic requests. No `.env` file or backend setup is required.
+
+To verify and preview a production build, stop the development server or use a second terminal in the `safe` directory:
 
 ```sh
 pnpm build
 pnpm test
 pnpm audit --prod
-pnpm preview --host 127.0.0.1 --port 4173
+pnpm preview --host 127.0.0.1 --port 4173 --strictPort
 ```
 
-After starting the production preview, open `http://127.0.0.1:4173/`.
+Open **http://127.0.0.1:4173/** after the preview starts. This is a local preview; it does not publish a website. See [development and deployment](docs/development.md) for the file layout, available commands, and hosting requirements.
 
-The production client is emitted to `dist/client`. A compatible static asset Worker and hosting metadata are also emitted to `dist/server` and `dist/.openai`. The public website is hosted through Sites. GitHub stores the source; pushing to GitHub does not automatically deploy the website.
+## Project documentation
 
-## Honest measurements
+| Document | Use it for |
+| --- | --- |
+| [User guide](docs/user-guide.md) | Running checks, interpreting results, comparisons, and troubleshooting. |
+| [Development guide](docs/development.md) | Local setup details, commands, project structure, and hosting. |
+| [Contributing](CONTRIBUTING.md) | Reporting problems and preparing changes. |
+| [Security and privacy](SECURITY.md) | Data handling, technical limits, and sensitive reports. |
+| [Verification record](docs/verification.md) | Dated checks, publication evidence, and untested environments. |
+| [Design review](docs/design-review.md) | The original template adaptation and visual verification. |
+| [Third party notices](third-party/README.md) | Component attribution and included licenses. |
 
-The browser makes three sequential requests to `https://www.cloudflare.com/cdn-cgi/trace`. Each request has a six second timeout and an 8 KiB response limit. Requests omit credentials and referrer information, reject redirects, and request an uncached response. Responses must contain a valid IP address, the HTTPS scheme, and a supported TLS version. Unexpected HTML or an incomplete diagnostic is inconclusive.
+## Template and licensing
 
-Only selected fields are used: IP address, TLS version, HTTP version, and the endpoint's SNI report. IP addresses remain in memory only. Cloudflare receives the ordinary request metadata described in its privacy policy. Your website host also receives normal page requests. Safe's application includes no advertising or analytics.
+Safe uses Tabler 1.5.1, Tabler Icons 3.46.0, and locally bundled Inter 5.3.0 fonts. The interface adapts [Tabler's sidebar dashboard](https://preview.tabler.io/layout-vertical.html) for WiFi checks.
 
-Request duration includes browser and service overhead. It is not a WiFi signal or throughput measurement. Browser connection estimates such as `4g` do not identify the transport and are not presented as WiFi detection. A local HTTP page is reported as HTTP even though localhost may count as a secure context.
-
-When comparing checks, the timing difference is the after check's reported median request duration minus the before check's. Negative values mean a lower duration in the after check; positive values mean a higher duration. If either check has no successful samples, the timing comparison is unavailable.
-
-A successful HTTPS test does not validate all applications, router configuration, device trust roots, DNS encryption, ECH coverage, VPN coverage, or operator logging. Failure does not prove an attack. An IP change does not prove that a VPN is enabled. IP comparisons become unavailable after reload or when the address changes within a check.
-
-The Cloudflare diagnostic is an external dependency, with no availability guarantee from Safe. If its response format or CORS behavior changes, tests fail visibly as inconclusive rather than being replaced with fabricated values.
-
-## Template and attribution
-
-Safe uses the actual **Tabler 1.5.1** CSS and **Tabler Icons 3.46.0**, adapted from the official sidebar dashboard. It also bundles Inter 5.3.0 font files locally.
-
-The template appears as item 17 in Spruko's published [20 Best Free Admin Dashboard Templates](https://sprukomarket.com/blog/20-best-free-admin-dashboard-templates-for-developers). This is an editorial template listing, not a verified ranking of template websites.
-
-[Official Tabler source](https://github.com/tabler/tabler) · [Template](https://tabler.io/admin-template) · [Visual reference](https://preview.tabler.io/layout-vertical.html)
-
-Required third party notices are preserved in `third-party`. Publishing this repository does not apply the dependencies' licenses to Safe's original application code. No separate open source license for that code has been selected.
-
-## Verification
-
-See [VERIFICATION.md](VERIFICATION.md), [design-qa.md](design-qa.md), and [SECURITY.md](SECURITY.md). Automated tests use fictional documentation IP addresses and deterministic failure scenarios. Live browser verification is recorded without publishing real addresses or check payloads.
-
-## Sources behind the explanations
-
-1. [EFF: Encryption and metadata](https://ssd.eff.org/module/what-should-i-know-about-encryption)
-2. [EFF: Choosing a VPN](https://ssd.eff.org/module/vpn.html)
-3. [Cloudflare: Encrypted Client Hello](https://developers.cloudflare.com/ssl/edge-certificates/ech/)
-4. [MDN: NetworkInformation](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation)
-5. [Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/)
+Third party license notices are included in [third-party](third-party/README.md). **No separate open source license has been selected for Safe's original application code.** A public repository does not grant that code the licenses of its dependencies.

@@ -1,13 +1,23 @@
-# Prototype Instructions
+# Repository instructions
 
-The user authorized public HTTPS website hosting through Sites. Reuse the project_id in .openai/hosting.json and preserve public access. The website URL is https://safe.alx21.chatgpt.site. Keep the public GitHub repository synchronized when changing source.
+Safe is a browser connection diagnostic. Its tagline is Your WiFi welfare check. Use WiFi throughout user facing copy. Avoid hyphens and em dashes in prose where possible.
 
-Product: Safe. Tagline: Your WiFi welfare check. Use WiFi throughout, never hotspot. Avoid hyphens and em dashes in user facing prose where possible. The user authorized a public GitHub repository. Use Tabler 1.5.1's sidebar dashboard as the existing template, adapting its content to Safe. This replaces the generated mockups. Keep genuine observations, explanations, and unknowns distinct. Never infer universal safety, VPN coverage, encrypted DNS, identity, or surveillance from a browser probe. No scanning other devices. Never publish real check results, IP addresses, or local data in the repository.
+## Product boundaries
 
-Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
+Keep Measured, Explained, and Unknown distinct. Never infer universal WiFi safety, VPN coverage, encrypted DNS, identity, or surveillance from browser probes. Do not add scans of other devices. Never commit real check results, IP addresses, credentials, or browser data.
 
-Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.
+## Source and documentation
 
-When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
+The public repository is https://github.com/agammann/safe. Fetch current remote changes before editing and preserve unrelated work. Keep setup commands aligned with package.json, pnpm-lock.yaml, and the verification workflow. User instructions are in README.md and docs/user-guide.md; maintainer instructions are in docs/development.md and CONTRIBUTING.md.
 
-Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
+Use the pinned pnpm version. Run pnpm build and pnpm test for application changes. For documentation changes, validate links and any changed setup commands. Preserve dated verification evidence and distinguish historical checks from new checks.
+
+## Design
+
+The interface adapts Tabler's sidebar dashboard. Preserve the existing visual direction unless a redesign is requested. For substantial visual changes without a clear reference, use the Product Design context workflow. Record durable product decisions here.
+
+## Hosting
+
+The user authorized public HTTPS hosting at https://safe.alx21.chatgpt.site. Reuse the project_id in .openai/hosting.json and preserve public access. Use the Sites hosting workflow for deployment requests and app changes intended for release. Documentation only repository maintenance does not change the live website.
+
+Keep .openai/hosting.json, worker/index.js, scripts/prepare-sites-build.mjs, and tests/sites-worker.test.mjs compatible. Before a Sites handoff, run pnpm build and pnpm test:sites. The build must produce dist/client/index.html, dist/server/index.js, and dist/.openai/hosting.json. Never persist hosting credentials.

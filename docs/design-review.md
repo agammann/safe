@@ -1,5 +1,9 @@
 # Safe design verification
 
+[Back to the README](../README.md) · [Verification record](verification.md)
+
+Historical review of the original September 12, 2026 release. Capture paths below are relative to the repository root; ignored local captures are not included in the public repository.
+
 final result: passed
 
 ## Source and intended adaptation
@@ -34,6 +38,6 @@ Post-fix desktop source and implementation were viewed together. Mobile and ligh
 
 ## Functional checks and limits
 
-Live check, repeat check, comparison, persistence after reload, report reopening, removal and undo, clear history, export file, theme switch, and mobile navigation were exercised. Browser console inspection returned no warnings or errors. See `VERIFICATION.md` for precise evidence and untested platforms.
+Live check, repeat check, comparison, persistence after reload, report reopening, removal and undo, clear history, export file, theme switch, and mobile navigation were exercised. Browser console inspection returned no warnings or errors. See the [verification record](verification.md) for precise evidence and untested platforms.
 
 This result describes the inspected Chromium layouts and core interactions. It does not claim universal browser or device compatibility.
