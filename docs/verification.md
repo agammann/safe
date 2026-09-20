@@ -4,6 +4,22 @@
 
 This page preserves dated release evidence. Historical results are not continuous monitoring or a claim that every browser and network has been tested.
 
+## Real-world workflow review on September 19, 2026
+
+The existing public HTTPS site completed live diagnostic checks and comparison in the Codex in-app Chromium browser. A two-tab test reproduced a defect: deleting a report in one tab and completing a check in a stale tab restored the deleted report. The corrected build synchronizes saved history, reads current saved data before a change, preserves unsaved session reports, and keeps public IPs confined to the originating tab's memory.
+
+Two other corrections came from this review: a check with two successful requests now reports their average as its median, and browsers with blocked storage show **Session only** instead of claiming reports are saved.
+
+Validation of the corrected build:
+
+- Production build passed on Windows with Node 24.19.0 and pnpm 11.19.0; all 27 automated tests passed, including regressions for partial-check medians, stale-tab removal, unsaved reports, and IP boundaries.
+- In two local browser tabs, removing a report updated the second tab. A subsequent check and reload did not restore the removed report. Removal and undo also worked.
+- A local-only test harness supplied partial and failed diagnostic responses and delayed requests for cancellation. Partial results reported two successful requests; all failures stayed inconclusive with unavailable timing; cancellation saved no report. These are controlled fixtures, not adverse real WiFi measurements.
+- With local storage deliberately blocked in the local test harness, an actual network check completed three requests. The app warned that results were session-only. Export created a real JSON download with three samples and no IP fields.
+- A 390 by 844 CSS viewport showed a readable report, working navigation that closed after selection, and no page-wide horizontal overflow. Console inspection returned no warnings or errors.
+
+No participants were recruited for this review. This is functional browser testing on the available connection, not evidence of usability across a user population. Physical phones, Safari, Firefox, captive portals, and actual network/VPN transitions still need independent testing. Open tabs should be reloaded after an update so that they all run the corrected application.
+
 ## Documentation review on September 17, 2026
 
 The README, user guide, developer guide, and contributor instructions were checked against the application and package scripts. All 31 local documentation links and heading references passed validation. The application source, dependencies, and hosting configuration were unchanged.

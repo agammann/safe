@@ -26,7 +26,7 @@ You can cancel a check while it is running. A cancelled check does not save a ne
 | Protection for this app's page | Whether Safe itself loaded over HTTPS. The local development and preview addresses use HTTP. |
 | Unknown | Information outside this check's view. It is not a pass or a failure. |
 
-For three successful samples, the middle duration is reported. With two successful samples, Safe reports the higher of the two; with one success, it reports that duration. With no successes, duration is unavailable. Comparisons use this same reported statistic.
+For three successful samples, the middle duration is reported. With two successful samples, Safe reports their average; with one success, it reports that duration. With no successes, duration is unavailable. Comparisons use this same reported statistic.
 
 ## Compare checks
 
@@ -43,11 +43,13 @@ IP comparison needs an address from both reports in the current page session. It
 
 Safe automatically keeps the latest 20 reports in this browser when local storage is available. **Your checks** lets you reopen a report. New reports replace the oldest when all slots are used. Reports do not follow you to another browser, device, or website address.
 
+Open tabs synchronize saved history. Removing a saved report in one tab removes it from the others; saving a new check does not bring it back. A change from another tab ends the current undo opportunity. Public IP addresses are never shared between tabs.
+
 Use **Export report** to download a JSON file. It omits public IP addresses but retains the label and other report details. Review these before sharing. Safe does not import exported reports.
 
 Remove an individual report in **Your checks**, or open **Privacy & data** and select **Clear saved checks**. Use **Undo** immediately if needed. Do not rely on undo after a reload, another removal, or starting a new check. Clearing browser reports does not delete previously downloaded files.
 
-If the browser cannot save data, the app displays a notice. You can still use the current session and export a report before reloading. Stored reports are not encrypted; anyone using the same browser profile may be able to read them.
+If the browser cannot save data, the app displays a notice and **Session only** in the desktop header. You can still use the current session and export a report before reloading. Stored reports are not encrypted; anyone using the same browser profile may be able to read them.
 
 ## Troubleshooting
 

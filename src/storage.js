@@ -116,6 +116,21 @@ export function saveChecks(storage, checks) {
   }
 }
 
+// Reconcile saved history without sharing IPs or reviving remotely deleted checks.
+// Records that failed to save remain available in their original tab.
+export function reconcileChecks(current, previous, saved) {
+  const known = new Set(previous.map((check) => check.id));
+  const savedIds = new Set(saved.map((check) => check.id));
+  const unsaved = current.filter((check) => !known.has(check.id) && !savedIds.has(check.id));
+  const reconciled = saved.map((check) => {
+    const local = current.find((item) => item.id === check.id);
+    return local && JSON.stringify(sanitizeCheck(local)) === JSON.stringify(check)
+      ? local
+      : check;
+  });
+  return [...unsaved, ...reconciled].slice(0, MAX_CHECKS);
+}
+
 export function exportReport(check) {
   return JSON.stringify(
     {

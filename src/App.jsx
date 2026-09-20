@@ -26,6 +26,8 @@ import { runCheck, snapshotBrowser, compareChecks } from "./check.js";
 import {
   loadChecks,
   saveChecks,
+  sanitizeCheck,
+  reconcileChecks,
   exportReport,
   STORAGE_KEY,
   MAX_CHECKS,
@@ -247,6 +249,7 @@ export function App() {
   const [initial] = useState(readSaved);
   const [checks, setChecks] = useState(initial.checks);
   const checksRef = useRef(initial.checks);
+  const savedRef = useRef(initial.checks);
   const [page, setPage] = useState(startingPage);
   const [selected, setSelected] = useState(null);
   const [theme, setTheme] = useState(initialTheme);
@@ -255,6 +258,7 @@ export function App() {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [notice, setNotice] = useState(initial.error);
+  const [storageAvailable, setStorageAvailable] = useState(!initial.error);
   const [undo, setUndo] = useState(null);
   const [revealed, setRevealed] = useState(false);
   const [beforeId, setBeforeId] = useState("");
@@ -279,6 +283,28 @@ export function App() {
   }, [theme]);
   useEffect(() => () => controller.current?.abort(), []);
   useEffect(() => {
+    const sync = (event) => {
+      if (event.key !== STORAGE_KEY && event.key !== null) return;
+      try {
+        if (event.storageArea !== localStorage) return;
+      } catch { return; }
+      const latest = readSaved();
+      if (latest.error) { setNotice(latest.error); setStorageAvailable(false); return; }
+      const next = reconcileChecks(checksRef.current, savedRef.current, latest.checks);
+      savedRef.current = latest.checks;
+      checksRef.current = next;
+      setChecks(next);
+      setStorageAvailable(true);
+      setSelected((value) => next.find((check) => check.id === value?.id) || null);
+      setBeforeId("");
+      setAfterId("");
+      setUndo(null);
+      setNotice("Saved checks changed in another tab.");
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+  useEffect(() => {
     const escape = (e) => {
       if (e.key === "Escape") setMenuOpen(false);
     };
@@ -291,13 +317,22 @@ export function App() {
     setMenuOpen(false);
     window.scrollTo(0, 0);
   };
-  const commit = (next) => {
+  const commit = (update) => {
+    const latest = readSaved();
+    const current = latest.error
+      ? checksRef.current
+      : reconcileChecks(checksRef.current, savedRef.current, latest.checks);
+    if (!latest.error) savedRef.current = latest.checks;
+    const next = update(current);
     checksRef.current = next;
     setChecks(next);
     try {
       const error = saveChecks(localStorage, next);
+      setStorageAvailable(!error);
       if (error) setNotice(error);
+      else savedRef.current = next.map(sanitizeCheck).filter(Boolean);
     } catch {
+      setStorageAvailable(false);
       setNotice(
         "Results could not be saved. They remain available for this session.",
       );
@@ -321,7 +356,7 @@ export function App() {
         browser: snapshotBrowser(navigator, location),
         label,
       });
-      commit([result, ...checksRef.current].slice(0, MAX_CHECKS));
+      commit((current) => [result, ...current].slice(0, MAX_CHECKS));
       setSelected(result);
       setLabel("");
       go("check");
@@ -343,14 +378,15 @@ export function App() {
     go("check");
   }
   function removeCheck(id) {
-    setUndo(checks);
-    commit(checks.filter((c) => c.id !== id));
+    commit((current) => {
+      setUndo(current);
+      return current.filter((c) => c.id !== id);
+    });
     if (selected?.id === id) setSelected(null);
     setNotice("Check removed. You can undo this below.");
   }
   function clearChecks() {
-    setUndo(checks);
-    commit([]);
+    commit((current) => { setUndo(current); return []; });
     setSelected(null);
     setBeforeId("");
     setAfterId("");
@@ -359,7 +395,13 @@ export function App() {
     );
   }
   function restore() {
-    commit(undo);
+    const latest = readSaved();
+    if (!latest.error && JSON.stringify(latest.checks) !== JSON.stringify(savedRef.current)) {
+      setUndo(null);
+      setNotice("Saved checks changed in another tab. Undo is no longer available.");
+      return;
+    }
+    commit(() => undo);
     setUndo(null);
     setNotice("Your checks were restored.");
   }
@@ -474,7 +516,7 @@ export function App() {
           </div>
           <div className="topbar-actions">
             <span className="local-label">
-              <IconDeviceStorage /> Saved on this device
+              <IconDeviceStorage /> {storageAvailable ? "Saved on this device" : "Session only"}
             </span>
             <button
               className="btn btn-icon theme-toggle"

@@ -59,7 +59,7 @@ The browser makes three sequential requests to `https://www.cloudflare.com/cdn-c
 
 Public IPs remain in page memory. The storage layer removes them before saving or export, validates report fields, and recalculates summaries. It limits loading to 100,000 characters and keeps at most 20 reports. Local storage and exported files are not encrypted.
 
-The reported median takes the sorted successful duration at index `floor(count / 2)`. For two successful samples, that is the higher sample, not their average. Keep descriptions consistent with this behavior. Unsupported connection information stays Unknown; do not treat an estimated `4g` connection speed as proof of mobile transport.
+The reported median uses the middle successful duration for odd sample counts and the average of the two middle durations for even counts. Saved reports recompute the statistic from their samples. Unsupported connection information stays Unknown; do not treat an estimated `4g` connection speed as proof of mobile transport.
 
 ## Build output and hosting
 

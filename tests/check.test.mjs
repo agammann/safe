@@ -17,6 +17,7 @@ import {
   saveChecks,
   exportReport,
   MAX_CHECKS,
+  reconcileChecks,
 } from "../src/storage.js";
 
 const trace =
@@ -39,6 +40,40 @@ const store = () => {
     setItem: (k, v) => values.set(k, v),
   };
 };
+
+test("median handles partial checks and remains consistent after saving", () => {
+  for (const [samples, expected] of [
+    [[failed, failed, failed], null],
+    [[ok, failed, failed], 45],
+    [[{ ...ok, elapsedMs: 10 }, failed, { ...ok, elapsedMs: 101 }], 55.5],
+    [[{ ...ok, elapsedMs: 101 }, ok, { ...ok, elapsedMs: 10 }], 45],
+  ]) {
+    assert.equal(summarize(samples).medianMs, expected);
+    assert.equal(sanitizeCheck(makeCheck(samples)).summary.medianMs, expected);
+  }
+});
+
+test("another tab's removal stays removed when a stale tab saves again", () => {
+  const first = makeCheck(), removed = makeCheck(), added = makeCheck();
+  const previous = [removed, first].map(sanitizeCheck);
+  const latest = [sanitizeCheck(first)];
+  const reconciled = reconcileChecks([removed, first], previous, latest);
+  const storage = store();
+  saveChecks(storage, [added, ...reconciled]);
+  assert.deepEqual(loadChecks(storage).checks.map((check) => check.id), [added.id, first.id]);
+  assert.equal(reconciled[0], first, "the originating tab keeps its own in-memory IP");
+  assert.deepEqual(reconcileChecks([removed, first], previous, []), []);
+});
+
+test("tab synchronization preserves unsaved checks and does not import IPs", () => {
+  const first = makeCheck(), unsaved = makeCheck(), remote = makeCheck();
+  const next = reconcileChecks([unsaved, first], [sanitizeCheck(first)], [sanitizeCheck(remote), sanitizeCheck(first)]);
+  assert.deepEqual(next.map((check) => check.id), [unsaved.id, remote.id, first.id]);
+  assert.equal(next[0], unsaved);
+  assert.equal(next[1].samples[0].ip, undefined);
+  const changed = { ...sanitizeCheck(first), label: "Changed elsewhere" };
+  assert.equal(reconcileChecks([first], [sanitizeCheck(first)], [changed])[0].samples[0].ip, undefined);
+});
 
 test("parses a valid response and discards unsolicited metadata", () => {
   assert.deepEqual(parseTrace(trace), {

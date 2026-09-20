@@ -136,7 +136,10 @@ export function summarize(samples) {
   const times = successful.map((x) => x.elapsedMs).sort((a, b) => a - b);
   return {
     successful: successful.length,
-    medianMs: times.length ? times[Math.floor(times.length / 2)] : null,
+    medianMs: times.length
+      ? (times[Math.floor((times.length - 1) / 2)] +
+          times[Math.floor(times.length / 2)]) / 2
+      : null,
     ipChangedDuringCheck:
       new Set(successful.map((x) => x.ip).filter(Boolean)).size > 1,
   };
