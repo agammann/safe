@@ -4,6 +4,22 @@
 
 This page preserves dated release evidence. Historical results are not continuous monitoring or a claim that every browser and network has been tested.
 
+## Browser and onboarding review on October 2, 2026
+
+Reviewed source commit `fe8a747891f8459038a4215793ab37f8afee9c65` on Windows with Node 24.19.0 and pnpm 11.19.0. The documented frozen installation, production build, and all 27 tests passed. `pnpm audit --audit-level=low` reported no known dependency advisories.
+
+The public HTTPS site passed the following flows in Chrome 154.0.8037.95 and Edge 154.0.4258.48. The local production preview passed the same flows in Chrome:
+
+- Two live checks issued six HTTPS diagnostic requests in each browser run. The first check completed all three probes and saved its sanitized history.
+- Export produced an actual JSON download. Its samples omitted IP fields, and its public IP summary read **Not included**.
+- Comparison worked between the two checks in the same session. Reload preserved history and correctly made IP comparison unavailable.
+- Removing a test report in another tab updated history. Undo restored that report, and clearing history removed the generated reports.
+- History layouts had no horizontal overflow at widths of 1440, 390, and 320 CSS pixels. No uncaught page errors occurred.
+
+A separate local browser harness supplied controlled diagnostic responses. Partial success retained two successful probes; total failure stayed inconclusive with unavailable timing; cancellation saved no report; blocked storage displayed **Session only**. These four checks passed, but the supplied responses are fixtures rather than measurements of adverse WiFi conditions.
+
+No application changes were needed for these results. Real check payloads, addresses, downloads, and browser data are excluded from this repository. Firefox 155 could not launch in the local test environment because a required Windows assembly was unavailable, so it did not reach the application. Firefox, Safari, physical phones, captive portals, and actual network or VPN transitions remain unverified by this review.
+
 ## Real-world workflow review on September 19, 2026
 
 The existing public HTTPS site completed live diagnostic checks and comparison in the Codex in-app Chromium browser. A two-tab test reproduced a defect: deleting a report in one tab and completing a check in a stale tab restored the deleted report. The corrected build synchronizes saved history, reads current saved data before a change, preserves unsaved session reports, and keeps public IPs confined to the originating tab's memory.
