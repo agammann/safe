@@ -4,7 +4,7 @@
 
 [Open Safe](https://safe.alx21.chatgpt.site) · [User guide](docs/user-guide.md) · [Development guide](docs/development.md) · [Report a bug](https://github.com/agammann/safe/issues)
 
-Safe 1.0.0 helps you understand what your WiFi connection could reveal. Open the website, run a check, and get a plain language report based on three small HTTPS requests from your browser.
+Safe 1.0.1 helps you understand what your WiFi connection could reveal. Open the website, run a check, and get a plain language report based on three small HTTPS requests from your browser.
 
 No installation, account, or API key is needed to use the public website.
 
@@ -68,7 +68,7 @@ Open **http://127.0.0.1:4173/** after the preview starts. This is a local previe
 
 ## Source release, updates and recovery
 
-Download `safe_1.0.0_source.zip` and its checksum from [Releases](https://github.com/agammann/safe/releases). Compare the SHA256 value with `Get-FileHash safe_1.0.0_source.zip -Algorithm SHA256` in PowerShell, or `sha256sum -c safe_1.0.0_source.zip.sha256` on Linux. Extract it to a new folder, open `safe-1.0.0`, then run the same frozen install, build and preview commands above. Git is not required to use the extracted source; packaging a new release requires a clean Git checkout.
+Download `safe_1.0.1_source.zip` and its checksum from [Releases](https://github.com/agammann/safe/releases). Compare the SHA256 value with `Get-FileHash safe_1.0.1_source.zip -Algorithm SHA256` in PowerShell, or `sha256sum -c safe_1.0.1_source.zip.sha256` on Linux. Extract it to a new folder, open `safe-1.0.1`, then run the same frozen install, build and preview commands above. Git is not required to use the extracted source; packaging a new release requires a clean Git checkout.
 
 For updates, export any reports you need, stop the old local server and install the new release in a separate folder. Keep the same browser and website origin to retain saved history. Public and local versions use different storage. Reload open tabs after an update. Keep your previous source folder until the new build works so you can run it again if needed.
 

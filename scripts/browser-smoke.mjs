@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {chromium} from 'playwright';
 const root=path.resolve('dist/client');
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff':'font/woff','.woff2':'font/woff2'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff':'font/woff','.woff2':'font/woff2','.svg':'image/svg+xml'};
 const server=http.createServer((req,res)=>{
  const file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname.replace(/\/$/,'/index.html'));
  if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);res.end();return;}
@@ -39,6 +39,18 @@ const nav=async(page,label)=>{
  await page.getByRole('heading',{name:label,exact:true}).waitFor();
 };
 try{
+ const iconContext=await browser.newContext();
+ const iconPage=await iconContext.newPage();const iconErrors=[],missingAssets=[];
+ iconPage.on('console',message=>{if(message.type()==='error')iconErrors.push(message.text());});
+ iconPage.on('response',response=>{if(response.url().startsWith(url)&&response.status()>=400)missingAssets.push({path:new URL(response.url()).pathname,status:response.status()});});
+ await iconPage.goto(url);
+ const icon=iconPage.locator('link[rel="icon"]');
+ assert.equal(await icon.getAttribute('type'),'image/svg+xml');assert.equal(await icon.getAttribute('href'),'/favicon.svg');
+ const decoded=await iconPage.evaluate(()=>new Promise((resolve,reject)=>{
+  const image=new Image();image.onload=()=>resolve({width:image.naturalWidth,height:image.naturalHeight});image.onerror=()=>reject(Error('Favicon failed to decode'));image.src=document.querySelector('link[rel="icon"]').href;
+ }));
+ assert.deepEqual(decoded,{width:64,height:64});assert.deepEqual(iconErrors,[]);assert.deepEqual(missingAssets,[]);
+ passed.push('Explicit built favicon loads and decodes with no console errors or missing same-origin assets');await iconContext.close();
  const normal=await pageFor();
  await run(normal.page,'Fictional before');await run(normal.page,'Fictional after');
  assert.equal(normal.count(),6);await nav(normal.page,'Compare checks');
@@ -47,7 +59,7 @@ try{
  await nav(normal.page,'Your checks');await normal.page.getByRole('button',{name:'View report',exact:true}).first().click();
  const pending=normal.page.waitForEvent('download');await normal.page.getByRole('button',{name:'Export report',exact:true}).click();
  const download=await pending;const exported=fs.readFileSync(await download.path(),'utf8');
- assert(!exported.includes('203.0.113.10'));assert(!/"ip"\s*:/.test(exported));assert.equal(JSON.parse(exported).version,'1.0.0');
+ assert(!exported.includes('203.0.113.10'));assert(!/"ip"\s*:/.test(exported));assert.equal(JSON.parse(exported).version,'1.0.1');
  passed.push('Two controlled UI checks, same-session comparison, reload and real JSON download without addresses');
  for(const raw of ['{bad','x'.repeat(100001)]){
   const bad=await pageFor();await bad.page.evaluate(v=>localStorage.setItem('safe.checks.v1',v),raw);await bad.page.reload();

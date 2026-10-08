@@ -318,5 +318,5 @@ test("failed persistence retains session reports and reconciliation does not rev
   assert.equal(session.checks[0], first);
   assert.deepEqual(session.saved, []);
   assert.ok(session.error);
-  assert.equal(JSON.parse(exportReport(first)).version, "1.0.0");
+  assert.equal(JSON.parse(exportReport(first)).version, "1.0.1");
 });
