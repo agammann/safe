@@ -36,6 +36,7 @@ const run=async(page,label)=>{
 const nav=async(page,label)=>{
  if(await page.getByRole('button',{name:'Open navigation',exact:true}).isVisible())await page.getByRole('button',{name:'Open navigation',exact:true}).click();
  await page.locator('nav .side-link').filter({hasText:label}).click();
+ await page.getByRole('heading',{name:label,exact:true}).waitFor();
 };
 try{
  const normal=await pageFor();
