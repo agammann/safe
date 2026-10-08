@@ -4,6 +4,12 @@
 
 This page preserves dated release evidence. Historical results are not continuous monitoring or a claim that every browser and network has been tested.
 
+## Version 1.0.1 icon review on October 8, 2026
+
+The public 1.0.0 page requested a missing default `/favicon.ico` and logged HTTP 404. Version 1.0.1 explicitly links a same-origin SVG icon. Its built asset loaded and decoded at 64 by 64 pixels in Chromium 151.0.7922.34 with no local console errors or missing same-origin assets. The production build, all 30 tests and six controlled browser groups passed on Node 24.19.0 and pnpm 11.19.0. The diagnostic implementation and Content Security Policy are unchanged. The application label and exported report version now match 1.0.1.
+
+The prior public failure is retained in the review evidence. Source CI, the exact downloaded consumer and hosted icon acceptance have separate release gates; the local check alone does not establish the deployed result. The 1.0.0 source release remains unchanged.
+
 ## Version 1.0.0 review on October 7, 2026
 
 The v1 contract is browser connection evidence from three Cloudflare HTTPS probes, the latest 20 sanitized local reports, comparison and JSON export. An actual second network or VPN transition is outside this release check. Safe makes no whole device or WiFi safety certification.

@@ -157,7 +157,7 @@ export function exportReport(check) {
   return JSON.stringify(
     {
       product: "Safe",
-      version: "1.0.0",
+      version: "1.0.1",
       scope: "Browser connection check, not a WiFi security certification",
       provider: "Cloudflare diagnostic endpoint",
       publicIp: "Not included",
