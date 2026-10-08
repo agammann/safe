@@ -12,6 +12,8 @@ The public repository is https://github.com/agammann/safe. Fetch current remote 
 
 Use the pinned pnpm version. Run pnpm build and pnpm test for application changes. For documentation changes, validate links and any changed setup commands. Preserve dated verification evidence and distinguish historical checks from new checks.
 
+For v1 changes also run the full dependency audit and controlled browser check. Source releases require a clean committed tree, exact ZIP checksums and extracted consumer verification. Keep the original application MIT license and third party notices. Never overwrite unreadable saved history without the explicit Privacy reset action.
+
 ## Design
 
 The interface adapts Tabler's sidebar dashboard. Preserve the existing visual direction unless a redesign is requested. For substantial visual changes without a clear reference, use the Product Design context workflow. Record durable product decisions here.

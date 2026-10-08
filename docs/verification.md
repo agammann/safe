@@ -4,6 +4,20 @@
 
 This page preserves dated release evidence. Historical results are not continuous monitoring or a claim that every browser and network has been tested.
 
+## Version 1.0.0 review on October 7, 2026
+
+The v1 contract is browser connection evidence from three Cloudflare HTTPS probes, the latest 20 sanitized local reports, comparison and JSON export. An actual second network or VPN transition is outside this release check. Safe makes no whole device or WiFi safety certification.
+
+On Windows with Node 24.19.0 and pnpm 11.19.0, the updated production build and all 30 diagnostic, storage and Worker tests passed. Available dependency patches were applied, including source-map-js 1.2.2, and the full dependency audit reported no known advisories.
+
+Chrome 155.0.8059.12 and Edge 154.0.4258.62 each completed two ordinary UI checks on the available connection, with six successful HTTPS responses reporting TLS 1.3 per browser. Actual JSON downloads excluded measured addresses. Reload kept the reports and made IP comparison unavailable. These local app pages used HTTP; the diagnostic requests used HTTPS. Hosted HTTPS acceptance is a separate publication check.
+
+Controlled fictional responses separately verified changed address comparison, an address change within a check, 21 checks retaining the newest 20 after reload, two tab removal and stale saving, clear and undo, partial and malformed responses, six second request timeouts, cancellation and blocked persistence. Corrupt, oversized, duplicate and invalid saved history remained unchanged until an explicit reset. The browser checks also covered keyboard navigation and 1440, 390 and 320 CSS pixel layouts with no page errors or page wide horizontal overflow.
+
+Two application failures were found and corrected: completing a check replaced unreadable saved data, and choosing the active page left narrow navigation open because the URL fragment did not change. First attempts and driver corrections remain in the private review evidence. The shipped controlled browser check is reproducible with `pnpm test:browser`; its endpoint responses are fixtures, not actual adverse network measurements.
+
+Real addresses and trace payloads were not retained in source or review evidence. This review does not establish physical phone, Firefox, Safari, captive portal, router, VPN or whole device coverage. Source release CI and downloaded consumer results are tied to their exact release commit; website hosting has its own acceptance record.
+
 ## Browser and onboarding review on October 2, 2026
 
 Reviewed source commit `fe8a747891f8459038a4215793ab37f8afee9c65` on Windows with Node 24.19.0 and pnpm 11.19.0. The documented frozen installation, production build, and all 27 tests passed. `pnpm audit --audit-level=low` reported no known dependency advisories.

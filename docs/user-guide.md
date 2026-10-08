@@ -51,6 +51,8 @@ Remove an individual report in **Your checks**, or open **Privacy & data** and s
 
 If the browser cannot save data, the app displays a notice and **Session only** in the desktop header. You can still use the current session and export a report before reloading. Stored reports are not encrypted; anyone using the same browser profile may be able to read them.
 
+Unreadable or oversized saved data is left unchanged when you run another check. New results remain in this session and can be exported. If you choose to discard the damaged history, open **Privacy & data** and select **Reset saved data**. This also works when no readable reports are left. Browser storage restrictions still need to be changed in the browser settings.
+
 ## Troubleshooting
 
 | What you see | What to do |

@@ -13,7 +13,9 @@ export function sanitizeCheck(check) {
     !Number.isFinite(Date.parse(check.timestamp)) ||
     !Array.isArray(check.samples) ||
     check.samples.length !== 3 ||
-    !check.browser
+    !check.browser ||
+    typeof check.browser !== "object" ||
+    Array.isArray(check.browser)
   )
     return null;
   const samples = [];
@@ -83,10 +85,15 @@ export function loadChecks(storage) {
       };
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) throw new Error();
+    const ids = new Set();
     const checks = parsed
       .slice(0, MAX_CHECKS)
       .map(sanitizeCheck)
-      .filter(Boolean);
+      .filter((check) => {
+        if (!check || ids.has(check.id)) return false;
+        ids.add(check.id);
+        return true;
+      });
     return {
       checks,
       error:
@@ -131,11 +138,26 @@ export function reconcileChecks(current, previous, saved) {
   return [...unsaved, ...reconciled].slice(0, MAX_CHECKS);
 }
 
+// Keep unreadable saved bytes intact until the user explicitly resets history.
+export function commitChecks(storage, current, previous, update, { resetUnreadable = false } = {}) {
+  const latest = loadChecks(storage);
+  const checks = update(latest.error ? current : reconcileChecks(current, previous, latest.checks))
+    .slice(0, MAX_CHECKS);
+  const error = latest.error && !resetUnreadable
+    ? "Saved data could not be read and was left unchanged. New results remain in this session. Reset saved data in Privacy to save again."
+    : saveChecks(storage, checks);
+  return {
+    checks,
+    saved: error ? (latest.error ? previous : latest.checks) : checks.map(sanitizeCheck).filter(Boolean),
+    error,
+  };
+}
+
 export function exportReport(check) {
   return JSON.stringify(
     {
       product: "Safe",
-      version: "0.1.0",
+      version: "1.0.0",
       scope: "Browser connection check, not a WiFi security certification",
       provider: "Cloudflare diagnostic endpoint",
       publicIp: "Not included",
