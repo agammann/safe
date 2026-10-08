@@ -8,7 +8,7 @@ The browser contacts one fixed Cloudflare HTTPS diagnostic destination. Cloudfla
 
 The diagnostic response is untrusted input. The client applies an 8 KiB streaming bound, a six second abort timer per request, HTTP status checks, and a strict whitelist of relevant fields. A single check has exactly three requests. The interface prevents concurrent checks and provides cancellation.
 
-Saved data is limited to 20 reports and a 100,000 character loading bound. Stored fields are validated and summaries are recalculated. Public IPs and extra fields are removed before persistence and export. React renders labels and diagnostic descriptions as text. No response or saved field becomes HTML.
+Saved data is limited to 20 reports and a 100,000 character loading bound. Stored fields are validated, duplicate identifiers are ignored and summaries are recalculated. Unreadable saved bytes are not replaced by a new check; resetting them requires the explicit Privacy action. Public IPs and extra fields are removed before persistence and export. React renders labels and diagnostic descriptions as text. No response or saved field becomes HTML.
 
 The HTML includes a restrictive Content Security Policy and no-referrer policy. Only the fixed Cloudflare origin is allowed for external probes. The development policy includes loopback WebSocket connections for Vite. Production hosting should serve HTTPS and can additionally apply frame-ancestors, HSTS, and other response headers appropriate to its host. The included generic static Worker remains compatible with the starter's asset contract.
 

@@ -9,3 +9,5 @@ playwright-report/
 test-results/
 .DS_Store
 docs/evidence/
+release-artifacts/
+consumer-output/

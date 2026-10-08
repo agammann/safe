@@ -18,7 +18,9 @@ Start with the [README](README.md) and [development guide](docs/development.md).
 pnpm install --frozen-lockfile
 pnpm build
 pnpm test
-pnpm audit --prod
+pnpm audit
+pnpm exec playwright install chromium
+pnpm test:browser
 ```
 
 For documentation only changes, check local links and verify commands that you change. UI changes should also be checked in a browser at desktop and narrow widths. Keep test data fictional, and record genuine live verification separately from controlled fixtures.
@@ -34,4 +36,4 @@ For documentation only changes, check local links and verify commands that you c
 
 Generated builds, installed dependencies, private local captures, credentials, and real reports do not belong in commits. Publishing source to GitHub does not update the live website; see the [hosting instructions](docs/development.md#build-output-and-hosting).
 
-No license has been selected for Safe's original application code. This guide does not grant additional rights or apply dependency licenses to the application.
+Safe's original application code uses the [MIT license](LICENSE). Preserve the existing third party notices when distributing a build.

@@ -25,8 +25,7 @@ import {
 import { runCheck, snapshotBrowser, compareChecks } from "./check.js";
 import {
   loadChecks,
-  saveChecks,
-  sanitizeCheck,
+  commitChecks,
   reconcileChecks,
   exportReport,
   STORAGE_KEY,
@@ -317,25 +316,23 @@ export function App() {
     setMenuOpen(false);
     window.scrollTo(0, 0);
   };
-  const commit = (update) => {
-    const latest = readSaved();
-    const current = latest.error
-      ? checksRef.current
-      : reconcileChecks(checksRef.current, savedRef.current, latest.checks);
-    if (!latest.error) savedRef.current = latest.checks;
-    const next = update(current);
-    checksRef.current = next;
-    setChecks(next);
+  const commit = (update, options) => {
     try {
-      const error = saveChecks(localStorage, next);
+      const { checks: next, saved, error } = commitChecks(localStorage, checksRef.current, savedRef.current, update, options);
+      checksRef.current = next;
+      savedRef.current = saved;
+      setChecks(next);
       setStorageAvailable(!error);
       if (error) setNotice(error);
-      else savedRef.current = next.map(sanitizeCheck).filter(Boolean);
+      return error;
     } catch {
+      const next = update(checksRef.current);
+      checksRef.current = next;
+      setChecks(next);
       setStorageAvailable(false);
-      setNotice(
-        "Results could not be saved. They remain available for this session.",
-      );
+      const error = "Results could not be saved. They remain available for this session.";
+      setNotice(error);
+      return error;
     }
   };
   async function start() {
@@ -378,20 +375,20 @@ export function App() {
     go("check");
   }
   function removeCheck(id) {
-    commit((current) => {
+    const error = commit((current) => {
       setUndo(current);
       return current.filter((c) => c.id !== id);
     });
     if (selected?.id === id) setSelected(null);
-    setNotice("Check removed. You can undo this below.");
+    setNotice(error || "Check removed. You can undo this below.");
   }
   function clearChecks() {
-    commit((current) => { setUndo(current); return []; });
+    const error = commit((current) => { setUndo(current); return []; }, { resetUnreadable: true });
     setSelected(null);
     setBeforeId("");
     setAfterId("");
     setNotice(
-      "Saved checks cleared. You can undo this until you leave this page.",
+      error || "Saved checks cleared. You can undo this until you leave this page.",
     );
   }
   function restore() {
@@ -401,9 +398,9 @@ export function App() {
       setNotice("Saved checks changed in another tab. Undo is no longer available.");
       return;
     }
-    commit(() => undo);
+    const error = commit(() => undo);
     setUndo(null);
-    setNotice("Your checks were restored.");
+    setNotice(error || "Your checks were restored.");
   }
   function download(check) {
     const url = URL.createObjectURL(
@@ -461,6 +458,7 @@ export function App() {
             <a
               key={id}
               href={`#${id}`}
+              onClick={() => setMenuOpen(false)}
               aria-current={page === id ? "page" : undefined}
               className={`side-link ${page === id ? "active" : ""}`}
             >
@@ -476,6 +474,7 @@ export function App() {
             <a
               key={id}
               href={`#${id}`}
+              onClick={() => setMenuOpen(false)}
               aria-current={page === id ? "page" : undefined}
               className={`side-link ${page === id ? "active" : ""}`}
             >
@@ -490,7 +489,7 @@ export function App() {
             Clarity, wherever you connect.
             <span>Home. Work. Everywhere WiFi.</span>
           </p>
-          <span className="version">Safe 0.1</span>
+          <span className="version">Safe 1.0.0</span>
         </div>
       </aside>
       {menuOpen ? (
@@ -1236,15 +1235,16 @@ export function App() {
                   <h3>Saved checks on this device</h3>
                   <p className="text-secondary mb-0">
                     {checks.length} of 20 slots used. Clearing here does not
-                    remove exported files.
+                    remove exported files. If saved data is unreadable, new
+                    checks remain in this session until you reset it here.
                   </p>
                 </div>
                 <button
                   className="btn btn-outline-danger"
-                  disabled={!checks.length || running}
+                  disabled={(!checks.length && storageAvailable) || running}
                   onClick={clearChecks}
                 >
-                  <IconTrash size={18} /> Clear saved checks
+                  <IconTrash size={18} /> {storageAvailable ? "Clear saved checks" : "Reset saved data"}
                 </button>
               </div>
               <p className="text-secondary small">

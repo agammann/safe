@@ -18,6 +18,8 @@ import {
   exportReport,
   MAX_CHECKS,
   reconcileChecks,
+  commitChecks,
+  STORAGE_KEY,
 } from "../src/storage.js";
 
 const trace =
@@ -273,3 +275,48 @@ test("blocked or exhausted local storage is reported without crashing", () => {
 });
 test("oversize saved data is refused before JSON parsing", () =>
   assert.ok(loadChecks({ getItem: () => "x".repeat(100001) }).error));
+
+test("unreadable saved bytes survive new reports until an explicit reset", () => {
+  for (const raw of ["{bad", "x".repeat(100001), JSON.stringify([makeCheck(), { schema: 900 }])]) {
+    const storage = store();
+    storage.setItem(STORAGE_KEY, raw);
+    const initial = loadChecks(storage).checks;
+    const added = makeCheck();
+    const result = commitChecks(storage, initial, initial, (current) => [added, ...current]);
+    assert.equal(result.checks[0], added);
+    assert.ok(result.error);
+    assert.equal(storage.getItem(STORAGE_KEY), raw);
+    const reset = commitChecks(storage, result.checks, result.saved, () => [], { resetUnreadable: true });
+    assert.equal(reset.error, null);
+    assert.deepEqual(loadChecks(storage), { checks: [], error: null });
+    assert.equal(commitChecks(storage, [], [], () => [added]).error, null);
+    assert.equal(loadChecks(storage).checks[0].samples[0].ip, undefined);
+  }
+});
+
+test("duplicate saved identifiers are recovered once and kept unchanged until reset", () => {
+  const storage = store();
+  const first = makeCheck();
+  const raw = JSON.stringify([first, first]);
+  storage.setItem(STORAGE_KEY, raw);
+  const initial = loadChecks(storage);
+  assert.equal(initial.checks.length, 1);
+  assert.ok(initial.error);
+  commitChecks(storage, initial.checks, initial.checks, (current) => current);
+  assert.equal(storage.getItem(STORAGE_KEY), raw);
+  assert.equal(sanitizeCheck({ ...first, browser: [] }), null);
+});
+
+test("failed persistence retains session reports and reconciliation does not revive remote deletions", () => {
+  const first = makeCheck(), added = makeCheck();
+  const storage = store();
+  saveChecks(storage, []);
+  const result = commitChecks(storage, [first], [sanitizeCheck(first)], () => [added]);
+  assert.deepEqual(result.saved.map((c) => c.id), [added.id]);
+  const blocked = { getItem: () => "[]", setItem: () => { throw Error("quota"); } };
+  const session = commitChecks(blocked, [], [], () => [first]);
+  assert.equal(session.checks[0], first);
+  assert.deepEqual(session.saved, []);
+  assert.ok(session.error);
+  assert.equal(JSON.parse(exportReport(first)).version, "1.0.0");
+});
