@@ -12,8 +12,8 @@ importers:
         specifier: 5.3.0
         version: 5.3.0
       '@tabler/core':
-        specifier: 1.6.1
-        version: 1.6.1
+        specifier: 1.7.1
+        version: 1.7.1
       '@tabler/icons-react':
         specifier: 3.49.0
         version: 3.49.0(react@19.3.0)
@@ -144,8 +144,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@tabler/core@1.6.1':
-    resolution: {integrity: sha512-lgmR9gcxRp5JlLxcmRi9Rz85JrEvH6Bz71KnlcPVSa97wtwQNjgSs3g3fxwbAlulHyRMghhIV04QUuW3pqDsIg==}
+  '@tabler/core@1.7.1':
+    resolution: {integrity: sha512-sC42sr/uslr7kIZwyBPESWJKRm1E4hYAMMZyLDoyG0ZlEOlglRW0L5c1gf8x6i+QApT+AtHm10fDP1j2WgQJpg==}
     engines: {node: '>=20'}
     peerDependencies:
       vanilla-calendar-pro: ^3.3.2
@@ -423,7 +423,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@tabler/core@1.6.1':
+  '@tabler/core@1.7.1':
     dependencies:
       '@popperjs/core': 2.11.8
 
