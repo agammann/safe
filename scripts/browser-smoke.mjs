@@ -3,6 +3,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import {chromium} from 'playwright';
+const version=JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
 const root=path.resolve('dist/client');
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff':'font/woff','.woff2':'font/woff2','.svg':'image/svg+xml'};
 const server=http.createServer((req,res)=>{
@@ -59,7 +60,7 @@ try{
  await nav(normal.page,'Your checks');await normal.page.getByRole('button',{name:'View report',exact:true}).first().click();
  const pending=normal.page.waitForEvent('download');await normal.page.getByRole('button',{name:'Export report',exact:true}).click();
  const download=await pending;const exported=fs.readFileSync(await download.path(),'utf8');
- assert(!exported.includes('203.0.113.10'));assert(!/"ip"\s*:/.test(exported));assert.equal(JSON.parse(exported).version,'1.0.1');
+ assert(!exported.includes('203.0.113.10'));assert(!/"ip"\s*:/.test(exported));assert.equal(JSON.parse(exported).version,version);
  passed.push('Two controlled UI checks, same-session comparison, reload and real JSON download without addresses');
  for(const raw of ['{bad','x'.repeat(100001)]){
   const bad=await pageFor();await bad.page.evaluate(v=>localStorage.setItem('safe.checks.v1',v),raw);await bad.page.reload();

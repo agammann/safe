@@ -1,5 +1,11 @@
 # Changes
 
+## 1.0.2
+
+- Align the current Tabler core and Icons attribution with the installed packages while retaining their license notices.
+- Deliver the dependency and verification tooling updates already on main with matching application and export labels.
+- Check exported version labels against package metadata in the existing unit and controlled browser checks.
+
 ## 1.0.1
 
 - Provide an explicit same-origin SVG favicon so browsers receive the intended icon instead of a missing default favicon request.

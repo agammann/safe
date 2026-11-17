@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
 import {
   parseTrace,
   validIp,
@@ -318,5 +320,5 @@ test("failed persistence retains session reports and reconciliation does not rev
   assert.equal(session.checks[0], first);
   assert.deepEqual(session.saved, []);
   assert.ok(session.error);
-  assert.equal(JSON.parse(exportReport(first)).version, "1.0.1");
+  assert.equal(JSON.parse(exportReport(first)).version, version);
 });
