@@ -4,6 +4,22 @@
 
 This page preserves dated release evidence. Historical results are not continuous monitoring or a claim that every browser and network has been tested.
 
+## Version 1.0.2 candidate review on November 17, 2026
+
+A clean checkout of `b5ed0ceaef3f5afc6995c3d4b07e952914cf99aa` installed with the frozen lockfile on Node.js 24.22.1 and pnpm 11.19.0. The 1.0.2 candidate corrects current Tabler attribution and aligns application and export labels. Its dependency lock, diagnostic behavior, storage format and hosting configuration are unchanged from that checkout. The carried Tabler Icons and Inter notices match the installed packages; the Tabler core notice matches its MIT CSS banner and the upstream license.
+
+The production build and all 30 tests passed. All six controlled browser groups passed in Chromium 158.0.8127.18, including real sanitized downloads, corrupt and oversized history recovery, cancellation, malformed responses, narrow layouts and keyboard navigation. These checks used fictional endpoint responses.
+
+Separately, browser verification of the baseline local build completed two actual checks through the fixed Cloudflare endpoint with three valid HTTPS responses each. The second report contained TLS 1.3 for all samples. Comparison worked in the same page session and became unavailable after reload; both reports persisted. An actual export omitted addresses. Individual removal and Undo worked, and only the named fictional test reports were cleared. Captured warnings and errors were empty. No raw diagnostic response or address was opened or retained. No network settings were changed and no other devices were inspected.
+
+The final local candidate also completed an actual three response check with TLS 1.3, displayed 1.0.2 and downloaded a sanitized 1.0.2 export. The unchanged public 1.0.1 site separately completed three HTTPS responses and a sanitized 1.0.1 download. Both checks captured no warnings or errors; only their named test reports were removed from the initially empty test histories. The public check verifies the existing release, not deployment of the candidate.
+
+At the November 17 check, the required full dependency audit reported one high severity advisory, GHSA-fc5q-39xc-vjpf, in development tooling's Picomatch 4.0.7. The registry had no published 4.0.8 and the advisory listed no patched version at that review. The latest available Vite also retained that dependency. The result was limited to development dependencies and held publication at the time.
+
+## November 19, 2026 dependency audit recheck
+
+GitHub withdrew the Picomatch advisory on November 18. The required dependency audit reported zero advisories on the candidate lockfile when rerun on November 19. The source candidate remains a draft. [Advisory record](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)
+
 ## Version 1.0.1 icon review on October 8, 2026
 
 The public 1.0.0 page requested a missing default `/favicon.ico` and logged HTTP 404. Version 1.0.1 explicitly links a same-origin SVG icon. Its built asset loaded and decoded at 64 by 64 pixels in Chromium 151.0.7922.34 with no local console errors or missing same-origin assets. The production build, all 30 tests and six controlled browser groups passed on Node 24.19.0 and pnpm 11.19.0. The diagnostic implementation and Content Security Policy are unchanged. The application label and exported report version now match 1.0.1.

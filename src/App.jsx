@@ -489,7 +489,7 @@ export function App() {
             Clarity, wherever you connect.
             <span>Home. Work. Everywhere WiFi.</span>
           </p>
-          <span className="version">Safe 1.0.1</span>
+          <span className="version">Safe 1.0.2</span>
         </div>
       </aside>
       {menuOpen ? (
