@@ -14,7 +14,11 @@ Separately, browser verification of the baseline local build completed two actua
 
 The final local candidate also completed an actual three response check with TLS 1.3, displayed 1.0.2 and downloaded a sanitized 1.0.2 export. The unchanged public 1.0.1 site separately completed three HTTPS responses and a sanitized 1.0.1 download. Both checks captured no warnings or errors; only their named test reports were removed from the initially empty test histories. The public check verifies the existing release, not deployment of the candidate.
 
-The required full dependency audit failed with one high severity advisory, [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf), in development tooling's picomatch 4.0.7. At this review, the registry had no published 4.0.8 and the advisory listed no patched version; the latest available Vite also retained this dependency. No exploit was reproduced, and this is not evidence of an exposed production glob endpoint. The audit gate remains unchanged. Source publication and website deployment are held pending a supported fix and their exact release checks. Local candidate checks do not establish a published or deployed 1.0.2 release.
+At the November 17 check, the required full dependency audit reported one high severity advisory, GHSA-fc5q-39xc-vjpf, in development tooling's Picomatch 4.0.7. The registry had no published 4.0.8 and the advisory listed no patched version at that review. The latest available Vite also retained that dependency. The result was limited to development dependencies and held publication at the time.
+
+## November 19, 2026 dependency audit recheck
+
+GitHub withdrew the Picomatch advisory on November 18. The required dependency audit reported zero advisories on the candidate lockfile when rerun on November 19. The source candidate remains a draft. [Advisory record](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)
 
 ## Version 1.0.1 icon review on October 8, 2026
 
